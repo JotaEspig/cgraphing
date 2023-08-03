@@ -13,7 +13,7 @@ typedef struct cg_plot_t
 } cg_plot_t;
 
 cg_plot_t *cg_new_plot(const char *title, int width, int height);
-void cg_plot_add_pair(cg_plot_t *plot, cg_pair_t pair, int scale);
+void cg_plot_add_pair(cg_plot_t *plot, cg_pair_t pair, float initial_x, float final_x);
 void cg_plot_show(cg_plot_t *plot);
 void cg_plot_destroy(cg_plot_t *plot);
 
