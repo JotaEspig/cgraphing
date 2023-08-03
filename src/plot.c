@@ -18,8 +18,12 @@ static cg_pair_t to_sdl_coordinates(cg_plot_t *plot, cg_pair_t pair)
     return new_pair;
 }
 
-void cg_plot_add_pair(cg_plot_t *plot, cg_pair_t pair)
+void cg_plot_add_pair(cg_plot_t *plot, cg_pair_t pair, int scale)
 {
+    int width, height;
+    SDL_GetWindowSize(plot->window, &width, &height);
+    pair.x *= width / (width / scale);
+    pair.y *= height / (height / scale);
     cg_pair_t sdl_pair = to_sdl_coordinates(plot, pair);
     cg_pair_list_append(plot->pairs, sdl_pair);
 }
