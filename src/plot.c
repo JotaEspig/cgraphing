@@ -14,20 +14,8 @@ static cg_pair_t to_sdl_coordinates(cg_plot_t *plot, cg_pair_t pair)
     // Y is a subtraction because SDL Y coordinates system is the opposite of a normal
     // cartesian plane
     new_pair.x = (width / 2) + pair.x;
-    new_pair.y = (height/ 2) - pair.y;
+    new_pair.y = (height / 2) - pair.y;
     return new_pair;
-}
-
-void cg_plot_add_pair(cg_plot_t *plot, cg_pair_t pair, float initial_x, float final_x)
-{
-    int width, height;
-    SDL_GetWindowSize(plot->window, &width, &height);
-
-    float div = fabs(initial_x) + fabs(final_x);
-    pair.x *= width / div + (initial_x + final_x);
-    pair.y *= height / div;
-    cg_pair_t sdl_pair = to_sdl_coordinates(plot, pair);
-    cg_pair_list_append(plot->pairs, sdl_pair);
 }
 
 cg_plot_t *cg_new_plot(const char *title, int width, int height)
@@ -70,6 +58,18 @@ cg_plot_t *cg_new_plot(const char *title, int width, int height)
     return plot;
 }
 
+void cg_plot_add_pair(cg_plot_t *plot, cg_pair_t pair, float initial_x, float final_x)
+{
+    int width, height;
+    SDL_GetWindowSize(plot->window, &width, &height);
+
+    float div = fabs(initial_x) + fabs(final_x);
+    pair.x *= width / div + (initial_x + final_x);
+    pair.y *= height / div;
+    cg_pair_t sdl_pair = to_sdl_coordinates(plot, pair);
+    cg_pair_list_append(plot->pairs, sdl_pair);
+}
+
 void cg_plot_show(cg_plot_t *plot)
 {
     int exit = 0;
@@ -96,8 +96,8 @@ void cg_plot_show(cg_plot_t *plot)
         if (plot->pairs->size == 1)
         {
             SDL_RenderDrawPointF(plot->renderer,
-                                plot->pairs->values[0].x,
-                                plot->pairs->values[0].y);
+                                 plot->pairs->values[0].x,
+                                 plot->pairs->values[0].y);
         }
         else
         {
@@ -106,7 +106,7 @@ void cg_plot_show(cg_plot_t *plot)
                 cg_pair_t p = plot->pairs->values[i];
                 cg_pair_t next_p = plot->pairs->values[i + 1];
                 SDL_RenderDrawLineF(plot->renderer,
-                                   p.x, p.y, next_p.x, next_p.y);
+                                    p.x, p.y, next_p.x, next_p.y);
             }
         }
 
