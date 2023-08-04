@@ -66,8 +66,7 @@ cg_plot_t *cg_new_plot(const char *title, int width, int height)
 
 void cg_plot_add_pair(cg_plot_t *plot, cg_pair_t pair)
 {
-    cg_pair_t sdl_pair = to_sdl_coordinates(plot, pair);
-    cg_pair_list_append(plot->pairs, sdl_pair);
+    cg_pair_list_append(plot->pairs, pair);
 }
 
 void cg_plot_show(cg_plot_t *plot, float initial_x, float final_x)
@@ -76,11 +75,20 @@ void cg_plot_show(cg_plot_t *plot, float initial_x, float final_x)
     SDL_GetWindowSize(plot->window, &width, &height);
 
     float div = fabs(initial_x) + fabs(final_x);
-    // TODO Fix scale
     float scale_x = width / div;
     float scale_y = height / div;
-    float offset_x = initial_x + final_x;
-    printf("%f - %f\n", scale_x, scale_y);
+    float offset_x = (initial_x + final_x) / 2;
+    cg_pair_list_t *pairs = cg_new_pair_list();
+
+    for (size_t i = 0; i < plot->pairs->size; ++i)
+    {
+        cg_pair_t new_p = plot->pairs->values[i];
+        new_p.x *= scale_x;
+        new_p.x += offset_x;
+        new_p.y *= scale_y;
+        cg_pair_list_append(pairs, to_sdl_coordinates(plot, new_p));
+    }
+
     int exit = 0;
     while (!exit)
     {
@@ -114,13 +122,14 @@ void cg_plot_show(cg_plot_t *plot, float initial_x, float final_x)
         {
             for (size_t i = 0; i < plot->pairs->size - 1; ++i)
             {
-                cg_pair_t p = plot->pairs->values[i];
-                cg_pair_t next_p = plot->pairs->values[i + 1];
-                float x1 = p.x * scale_x + offset_x;
-                float y1 = p.y * scale_y;
-                float x2 = next_p.x * scale_x + offset_x;
-                float y2 = next_p.y * scale_y;
-                printf("%f %f\n", x1, y1);
+                cg_pair_t p = pairs->values[i];
+                cg_pair_t next_p = pairs->values[i + 1];
+
+                float x1 = p.x;
+                float y1 = p.y;
+                float x2 = next_p.x;
+                float y2 = next_p.y;
+
                 for (int j = 0; j < plot->line_thickness; ++j)
                     for (int k = 0; k < plot->line_thickness; ++k)
                         SDL_RenderDrawLineF(plot->renderer,
@@ -130,6 +139,8 @@ void cg_plot_show(cg_plot_t *plot, float initial_x, float final_x)
 
         SDL_RenderPresent(plot->renderer);
     }
+
+    cg_pair_list_destroy(pairs);
 }
 
 void cg_plot_destroy(cg_plot_t *plot)
