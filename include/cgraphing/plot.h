@@ -4,17 +4,20 @@
 #include <SDL2/SDL.h>
 
 #include <cgraphing/pair.h>
+#include <cgraphing/color.h>
 
 typedef struct cg_plot_t
 {
     SDL_Window *window;
     SDL_Renderer *renderer;
     cg_pair_list_t *pairs;
+    int line_thickness;
+    cg_color_t line_color;
 } cg_plot_t;
 
 cg_plot_t *cg_new_plot(const char *title, int width, int height);
-void cg_plot_add_pair(cg_plot_t *plot, cg_pair_t pair, float initial_x, float final_x);
-void cg_plot_show(cg_plot_t *plot);
+void cg_plot_add_pair(cg_plot_t *plot, cg_pair_t pair);
+void cg_plot_show(cg_plot_t *plot, float initial_x, float final_x);
 void cg_plot_destroy(cg_plot_t *plot);
 
 #endif // PLOT_H
