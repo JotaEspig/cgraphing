@@ -5,14 +5,15 @@
 
 int main()
 {
-    cg_plot_t *plot = cg_new_plot("Jota Cria", 800, 800);
-    for (float i = -90; i <= 105; i += 0.1)
+    cg_plot_t *plot = cg_new_plot("Plot", 600, 600);
+    for (float x = -90; x <= 105; x += 0.1)
     {
-        float y = i * i - 100; // |x² +6x + 9|
-        cg_pair_t pair = {i, y};
-        cg_plot_add_pair(plot, pair, -15, 15);
+        float y = x * x + 6 * x + 9; // x² +6x + 9
+        cg_pair_t pair = {x, y};
+        cg_plot_add_pair(plot, pair);
     }
-    cg_plot_show(plot);
+    plot->line_thickness = 2;
+    cg_plot_show(plot, -30, 30);
     cg_plot_destroy(plot);
     return 0;
 }
