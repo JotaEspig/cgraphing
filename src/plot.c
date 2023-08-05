@@ -19,6 +19,19 @@ static cg_pair_t to_sdl_coordinates(cg_plot_t *plot, cg_pair_t pair)
     return new_pair;
 }
 
+static void draw_grid(cg_plot_t *plot)
+{
+    int width, height;
+    SDL_GetWindowSize(plot->window, &width, &height);
+
+    for (float x = 0; x < width + 1; ++x)
+    {
+        SDL_RenderDrawLineF(plot->renderer, x, 0, x, height);
+        if (x == width / 2)
+            SDL_RenderDrawLineF(plot->renderer, x + 1, 0, x + 1, height);
+    }
+}
+
 cg_plot_t *cg_new_plot(const char *title, int width, int height)
 {
     cg_plot_t *plot;
@@ -69,23 +82,15 @@ void cg_plot_add_pair(cg_plot_t *plot, cg_pair_t pair)
     cg_pair_list_append(plot->pairs, pair);
 }
 
-void cg_plot_show(cg_plot_t *plot, float initial_x, float final_x)
+void cg_plot_show(cg_plot_t *plot)
 {
     int width, height;
     SDL_GetWindowSize(plot->window, &width, &height);
 
-    float div = fabs(initial_x) + fabs(final_x);
-    float scale_x = width / div;
-    float scale_y = height / div;
-    float offset_x = (initial_x + final_x) / 2;
     cg_pair_list_t *pairs = cg_new_pair_list();
-
     for (size_t i = 0; i < plot->pairs->size; ++i)
     {
         cg_pair_t new_p = plot->pairs->values[i];
-        new_p.x *= scale_x;
-        new_p.x += offset_x;
-        new_p.y *= scale_y;
         cg_pair_list_append(pairs, to_sdl_coordinates(plot, new_p));
     }
 
@@ -108,6 +113,9 @@ void cg_plot_show(cg_plot_t *plot, float initial_x, float final_x)
 
         SDL_SetRenderDrawColor(plot->renderer, 255, 255, 255, 255);
         SDL_RenderClear(plot->renderer);
+
+        SDL_SetRenderDrawColor(plot->renderer, 0, 0, 0, 255);
+        draw_grid(plot);
 
         SDL_SetRenderDrawColor(plot->renderer,
                                plot->line_color.r, plot->line_color.g, plot->line_color.b,
