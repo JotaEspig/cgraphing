@@ -5,7 +5,8 @@
 
 #include <cgraphing/plot.h>
 #include <cgraphing/pair.h>
-#include <cgraphing/color.h>
+#include <cgraphing/mat4.h>
+#include <cgraphing/camera.h>
 
 static cg_pair_t to_sdl_coordinates(cg_plot_t *plot, cg_pair_t pair)
 {
@@ -19,7 +20,7 @@ static cg_pair_t to_sdl_coordinates(cg_plot_t *plot, cg_pair_t pair)
     return new_pair;
 }
 
-static void draw_grid(cg_plot_t *plot)
+static void draw_grid(cg_plot_t *plot, cg_mat4_t mat_transform)
 {
     int width, height;
     SDL_GetWindowSize(plot->window, &width, &height);
@@ -58,7 +59,7 @@ cg_plot_t *cg_new_plot(const char *title, int width, int height)
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
     if (renderer == NULL)
     {
-        free(window);
+        SDL_DestroyWindow(plot->window);
         free(plot);
         fprintf(stderr, "error initializing SDL_Renderer: %s\n", SDL_GetError());
         return NULL;
@@ -70,10 +71,8 @@ cg_plot_t *cg_new_plot(const char *title, int width, int height)
     plot->renderer = renderer;
     plot->pairs = pairs;
     plot->line_thickness = 1;
-    plot->line_color.r = 0;
-    plot->line_color.g = 0;
-    plot->line_color.b = 0;
-    plot->line_color.alpha = 255;
+    plot->line_color = (SDL_Color){0, 0, 0, 255};
+    plot->cam = cg_new_camera();
     return plot;
 }
 
@@ -82,7 +81,7 @@ void cg_plot_add_pair(cg_plot_t *plot, cg_pair_t pair)
     cg_pair_list_append(plot->pairs, pair);
 }
 
-void cg_plot_show(cg_plot_t *plot)
+void cg_plot_show(cg_plot_t *plot, cg_mat4_t mat_transform)
 {
     int width, height;
     SDL_GetWindowSize(plot->window, &width, &height);
@@ -115,11 +114,11 @@ void cg_plot_show(cg_plot_t *plot)
         SDL_RenderClear(plot->renderer);
 
         SDL_SetRenderDrawColor(plot->renderer, 0, 0, 0, 255);
-        draw_grid(plot);
+        draw_grid(plot, cg_new_mat4(1));
 
         SDL_SetRenderDrawColor(plot->renderer,
                                plot->line_color.r, plot->line_color.g, plot->line_color.b,
-                               plot->line_color.alpha);
+                               plot->line_color.a);
         if (plot->pairs->size == 1)
         {
             SDL_RenderDrawPointF(plot->renderer,
