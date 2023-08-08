@@ -1,0 +1,87 @@
+[
+    {
+        "arguments": [
+            "clang-11",
+            "-c",
+            "-fPIC",
+            "-I./include/",
+            "-I/usr/include/SDL2",
+            "-D_REENTRANT",
+            "--std=c99",
+            "-Wall",
+            "-o",
+            "obj/vec3.o",
+            "src/vec3.c"
+        ],
+        "directory": "/home/jotaespig/projects/cgraphing",
+        "file": "src/vec3.c"
+    },
+    {
+        "arguments": [
+            "clang-11",
+            "-c",
+            "-fPIC",
+            "-I./include/",
+            "-I/usr/include/SDL2",
+            "-D_REENTRANT",
+            "--std=c99",
+            "-Wall",
+            "-o",
+            "obj/mat4.o",
+            "src/mat4.c"
+        ],
+        "directory": "/home/jotaespig/projects/cgraphing",
+        "file": "src/mat4.c"
+    },
+    {
+        "arguments": [
+            "clang-11",
+            "-c",
+            "-fPIC",
+            "-I./include/",
+            "-I/usr/include/SDL2",
+            "-D_REENTRANT",
+            "--std=c99",
+            "-Wall",
+            "-o",
+            "obj/plot.o",
+            "src/plot.c"
+        ],
+        "directory": "/home/jotaespig/projects/cgraphing",
+        "file": "src/plot.c"
+    },
+    {
+        "arguments": [
+            "clang-11",
+            "-c",
+            "-fPIC",
+            "-I./include/",
+            "-I/usr/include/SDL2",
+            "-D_REENTRANT",
+            "--std=c99",
+            "-Wall",
+            "-o",
+            "obj/pair.o",
+            "src/pair.c"
+        ],
+        "directory": "/home/jotaespig/projects/cgraphing",
+        "file": "src/pair.c"
+    },
+    {
+        "arguments": [
+            "clang-11",
+            "-c",
+            "-fPIC",
+            "-I./include/",
+            "-I/usr/include/SDL2",
+            "-D_REENTRANT",
+            "--std=c99",
+            "-Wall",
+            "-o",
+            "obj/camera.o",
+            "src/camera.c"
+        ],
+        "directory": "/home/jotaespig/projects/cgraphing",
+        "file": "src/camera.c"
+    }
+]
