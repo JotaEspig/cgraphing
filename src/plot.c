@@ -38,6 +38,7 @@ static void draw_grid(cg_plot_t *plot, cg_mat4_t mat_transform)
         cg_vec3_t v2 = cg_new_vec3(x, height, 0);
         v1 = cg_mat4_mult_vec3(mat_transform, v1);
         v2 = cg_mat4_mult_vec3(mat_transform, v2);
+        if (x > 0 && x < 10) {cg_vec3_print(v1);}
         SDL_RenderDrawLineF(plot->renderer, v1.x, v1.y, v2.x, v2.y);
         if (x == width / 2)
         {
@@ -139,6 +140,7 @@ void cg_plot_show(cg_plot_t *plot)
         cg_mat4_t mat = cg_mat4_mult(perspective, view);
 
         SDL_SetRenderDrawColor(plot->renderer, 0, 0, 0, 255);
+        cg_mat4_print(mat);
         draw_grid(plot, mat);
 
         SDL_SetRenderDrawColor(plot->renderer,

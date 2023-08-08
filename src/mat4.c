@@ -14,7 +14,7 @@ cg_mat4_t cg_new_mat4(float type)
     cg_mat4_t mat4;
     for (int i = 0; i < 4; ++i)
         for (int j = 0; j < 4; ++j)
-            mat4.values[i][j] = (type == 1 && i == j) ? 1 : 0;
+            mat4.values[i][j] = (i == j && type == 1) ? 1 : 0;
 
     return mat4;
 }
