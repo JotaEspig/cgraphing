@@ -1,12 +1,19 @@
+#include "SDL_events.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #include <SDL2/SDL.h>
 
 #include <cgraphing/plot.h>
 #include <cgraphing/pair.h>
 #include <cgraphing/mat4.h>
+#include <cgraphing/vec3.h>
 #include <cgraphing/camera.h>
+
+#ifndef M_PI
+#define M_PI 3.14159265358979323846
+#endif
 
 static cg_pair_t to_sdl_coordinates(cg_plot_t *plot, cg_pair_t pair)
 {
@@ -27,9 +34,19 @@ static void draw_grid(cg_plot_t *plot, cg_mat4_t mat_transform)
 
     for (float x = 0; x < width + 1; ++x)
     {
-        SDL_RenderDrawLineF(plot->renderer, x, 0, x, height);
+        cg_vec3_t v1 = cg_new_vec3(x, 0, 0);
+        cg_vec3_t v2 = cg_new_vec3(x, height, 0);
+        v1 = cg_mat4_mult_vec3(mat_transform, v1);
+        v2 = cg_mat4_mult_vec3(mat_transform, v2);
+        SDL_RenderDrawLineF(plot->renderer, v1.x, v1.y, v2.x, v2.y);
         if (x == width / 2)
-            SDL_RenderDrawLineF(plot->renderer, x + 1, 0, x + 1, height);
+        {
+            cg_vec3_t v1 = cg_new_vec3(x + 1, 0, 0);
+            cg_vec3_t v2 = cg_new_vec3(x + 1, height, 0);
+            v1 = cg_mat4_mult_vec3(mat_transform, v1);
+            v2 = cg_mat4_mult_vec3(mat_transform, v2);
+            SDL_RenderDrawLineF(plot->renderer, v1.x, v1.y, v2.x, v2.y);
+        }
     }
 }
 
@@ -81,7 +98,7 @@ void cg_plot_add_pair(cg_plot_t *plot, cg_pair_t pair)
     cg_pair_list_append(plot->pairs, pair);
 }
 
-void cg_plot_show(cg_plot_t *plot, cg_mat4_t mat_transform)
+void cg_plot_show(cg_plot_t *plot)
 {
     int width, height;
     SDL_GetWindowSize(plot->window, &width, &height);
@@ -93,6 +110,7 @@ void cg_plot_show(cg_plot_t *plot, cg_mat4_t mat_transform)
         cg_pair_list_append(pairs, to_sdl_coordinates(plot, new_p));
     }
 
+    cg_mat4_t perspective = cg_camera_perspective(M_PI / 4, width / height, 0.1, 100);
     int exit = 0;
     while (!exit)
     {
@@ -105,6 +123,10 @@ void cg_plot_show(cg_plot_t *plot, cg_mat4_t mat_transform)
                 exit = 1;
                 break;
 
+            case SDL_KEYDOWN:
+                plot->cam.pos = cg_vec3_add(plot->cam.pos, plot->cam.front);
+                break;
+
             default:
                 break;
             }
@@ -113,8 +135,11 @@ void cg_plot_show(cg_plot_t *plot, cg_mat4_t mat_transform)
         SDL_SetRenderDrawColor(plot->renderer, 255, 255, 255, 255);
         SDL_RenderClear(plot->renderer);
 
+        cg_mat4_t view = cg_camera_get_view(plot->cam);
+        cg_mat4_t mat = cg_mat4_mult(perspective, view);
+
         SDL_SetRenderDrawColor(plot->renderer, 0, 0, 0, 255);
-        draw_grid(plot, cg_new_mat4(1));
+        draw_grid(plot, mat);
 
         SDL_SetRenderDrawColor(plot->renderer,
                                plot->line_color.r, plot->line_color.g, plot->line_color.b,
@@ -132,15 +157,17 @@ void cg_plot_show(cg_plot_t *plot, cg_mat4_t mat_transform)
                 cg_pair_t p = pairs->values[i];
                 cg_pair_t next_p = pairs->values[i + 1];
 
-                float x1 = p.x;
-                float y1 = p.y;
-                float x2 = next_p.x;
-                float y2 = next_p.y;
+                cg_vec3_t v1 = {p.x, p.y, 0};
+                cg_vec3_t v2 = {next_p.x, next_p.y, 0};
+                /*
+                v1 = cg_mat4_mult_vec3(mat, v1);
+                v2 = cg_mat4_mult_vec3(mat, v2);
+                */
 
                 for (int j = 0; j < plot->line_thickness; ++j)
                     for (int k = 0; k < plot->line_thickness; ++k)
                         SDL_RenderDrawLineF(plot->renderer,
-                                            x1 + j, y1 + k, x2 + j, y2 + k);
+                                            v1.x + j, v1.y + k, v2.x + j, v2.y + k);
             }
         }
 

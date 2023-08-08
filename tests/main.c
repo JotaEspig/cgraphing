@@ -7,6 +7,7 @@
 
 int main()
 {
+    /*
     printf("Testing vec3 and mat4 operations:\n");
     cg_vec3_t vec = cg_new_vec3(1, 2, 3);
     cg_vec3_print(vec);
@@ -35,8 +36,8 @@ int main()
     m2.values[2][3] = 4;
     cg_mat4_t m3 = cg_mat4_mult(m1, m2);
     cg_mat4_print(m3);
+    */
 
-    /*
     cg_plot_t *plot = cg_new_plot("Plot", 600, 600);
     for (float x = -90; x <= 105; x += 0.1)
     {
@@ -48,6 +49,5 @@ int main()
     plot->line_thickness = 3;
     cg_plot_show(plot);
     cg_plot_destroy(plot);
-    */
     return 0;
 }

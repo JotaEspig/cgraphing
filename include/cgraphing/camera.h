@@ -14,5 +14,6 @@ typedef struct cg_camera_t
 cg_camera_t cg_new_camera();
 cg_mat4_t cg_camera_get_view(cg_camera_t cam);
 cg_mat4_t cg_camera_look_at(cg_vec3_t eye, cg_vec3_t center, cg_vec3_t up);
+cg_mat4_t cg_camera_perspective(float fov, float aspect_radio, float near, float far);
 
 #endif // CAMERA_H

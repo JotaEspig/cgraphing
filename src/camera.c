@@ -1,6 +1,7 @@
 #include <cgraphing/camera.h>
 #include <cgraphing/vec3.h>
 #include <cgraphing/mat4.h>
+#include <math.h>
 
 cg_camera_t cg_new_camera()
 {
@@ -46,4 +47,25 @@ cg_mat4_t cg_camera_look_at(cg_vec3_t eye, cg_vec3_t center, cg_vec3_t up)
     matrix.values[3][3] = 1;
 
     return matrix;
+}
+
+cg_mat4_t cg_camera_perspective(float fov, float aspect_radio, float near, float far)
+{
+    cg_mat4_t mat = cg_new_mat4(1);
+    float half_fov = tanf(fov / 2);
+    float r = near * half_fov;
+    float l = -r;
+    float t = r / aspect_radio;
+    float b = -t;
+
+    mat.values[0][0] = 2 * near / (r - l);
+    mat.values[0][2] = (r + l) / (r - l);
+    mat.values[1][1] = 2 * near / (t - b);
+    mat.values[1][2] = (t + b) / (t - b);
+    mat.values[2][2] = -(far + near) / (far - near);
+    mat.values[2][3] = -2 * far * near / (far - near);
+    mat.values[3][2] = -1;
+    mat.values[3][3] = 0;
+
+    return mat;
 }
