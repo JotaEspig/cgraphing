@@ -49,6 +49,12 @@ cg_vec3_t cg_mat4_mult_vec3(cg_mat4_t mat, cg_vec3_t vec)
         for (int j = 0; j < 4; ++j)
             *((float *)&new_vec4 + i) += mat.values[i][j] * *((float *)&vec4 + j); // :)
 
+    if (new_vec4.w != 0)
+    {
+        new_vec4.vec3.x /= new_vec4.w;
+        new_vec4.vec3.y /= new_vec4.w;
+        new_vec4.vec3.z /= new_vec4.w;
+    }
     return new_vec4.vec3;
 }
 
