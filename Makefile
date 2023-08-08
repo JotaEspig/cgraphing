@@ -1,6 +1,6 @@
-CC = gcc
+CC = clang-11
 CC_FLAGS = -fPIC -I./include/ `sdl2-config --libs --cflags` --std=c99 -Wall -lm
-CC_TEST_FLAGS = -I./include/ -L./lib -lcgraphing -Wall -lm
+CC_TEST_FLAGS = -I./include/ `sdl2-config --libs --cflags` -L./lib -lcgraphing -Wall -lm
 
 TARGET_DIR = lib
 TARGET = libcgraphing.so
