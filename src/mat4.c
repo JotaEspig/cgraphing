@@ -33,23 +33,11 @@ cg_mat4_t cg_mat4_mult(cg_mat4_t m1, cg_mat4_t m2)
         for (int j = 0; j < 4; ++j)
             b[i][j] = m2.values[i][j];
 
-    // TODO Finish this mf
-    mat.values[0][0] = a[0][0] * b[0][0] + a[0][1] * b[1][0] + a[0][2] * b[2][0] + a[0][3] * b[3][0];
-    mat.values[0][1] = a[1][0] * b[0][0] + a[1][1] * b[1][0];
-    mat.values[0][2];
-    mat.values[0][3];
-    mat.values[1][0];
-    mat.values[1][1];
-    mat.values[1][2];
-    mat.values[1][3];
-    mat.values[2][0];
-    mat.values[2][1];
-    mat.values[2][2];
-    mat.values[2][3];
-    mat.values[3][0];
-    mat.values[3][1];
-    mat.values[3][2];
-    mat.values[3][3];
+    for (int c = 0; c < 4; ++c)
+        for (int r = 0; r < 4; ++r)
+            mat.values[r][c] = a[r][0] * b[0][c] + a[r][1] * b[1][c]
+                             + a[r][2] * b[2][c] + a[r][3] * b[3][c];
+
     return mat;
 }
 

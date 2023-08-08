@@ -25,6 +25,17 @@ int main()
     cg_vec3_t vec4 = cg_mat4_mult_vec3(mat, vec);
     cg_vec3_print(vec4);
 
+    cg_mat4_t m1 = cg_new_mat4(1);
+    m1.values[0][1] = 2;
+    m1.values[2][3] = 1.5;
+    cg_mat4_t m2 = cg_new_mat4(1);
+    m2.values[0][1] = 1;
+    m2.values[0][2] = 11;
+    m2.values[0][3] = 1;
+    m2.values[2][3] = 4;
+    cg_mat4_t m3 = cg_mat4_mult(m1, m2);
+    cg_mat4_print(m3);
+
     /*
     cg_plot_t *plot = cg_new_plot("Plot", 600, 600);
     for (float x = -90; x <= 105; x += 0.1)
